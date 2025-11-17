@@ -1,0 +1,22 @@
+{% extends 'crm/base.html' %}
+{% block title %}Home - CRM System{% endblock %}
+
+{% block content %}
+    <body>
+        <br>
+        <br>
+        <div class="text-center">
+            <h3>CRM - Management at its finest!</h3>
+            <br>
+            <h5>Keep track of your record effectively!</h5>
+            <hr>
+            <br>
+            {% if user.is_authenticated %}
+                <a class="btn btn-primary" type="button" href="{% url 'dashboard' %}">Go to your dashboard</a>
+            {% else %}
+                <a class="btn btn-primary" type="button" href="{% url 'my-login' %}">Login to your account</a>
+            {% endif %}
+        </div>
+
+    </body>
+{% endblock %}

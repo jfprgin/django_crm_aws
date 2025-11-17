@@ -1,0 +1,31 @@
+{% extends 'crm/base.html' %}
+{% block title %}View record - CRM System{% endblock %}
+
+{% block content %}
+    <body>
+        <div class="card">
+            <div class="card-body">
+                <strong>
+                    {{ record.last_name|upper }},
+
+                    {{ record.first_name }}
+                </strong>
+                <hr>
+                <p> <strong>ID: </strong> {{ record.id }} </p>
+                <p> <strong>Email: </strong> {{ record.email }} </p>
+                <p> <strong>Phone number: </strong> {{ record.phone }} </p>
+                <p> <strong>Address: </strong> {{ record.address }} </p>
+                <p> <strong>City: </strong> {{ record.city }} </p>
+                <p> <strong>Province: </strong> {{ record.province }} </p>
+                <p> <strong>Country: </strong> {{ record.country }}</p>
+                <p> <strong>Date joined: </strong> {{ record.creation_date }} </p>
+            </div>
+        </div>
+        <br>
+        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Return</a>
+        &nbsp;
+        <a class="btn btn-info" href="{% url 'update-record' record.id %}">View record</a>
+        &nbsp;
+        <a class="btn btn-danger" href="{% url 'delete-record' record.id %}">Delete record</a>
+    </body>
+{% endblock %}
