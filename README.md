@@ -1,4 +1,4 @@
-# Simple DJango CRUD CRUD Application
+# Simple DJango CRUD CRM Application
 
 This is a simple Django CRUD (Create, Read, Update, Delete) application that demonstrates the basic functionalities of a web application using the Django framework. The application allows users to create, view, update, and delete records in a database.
 
