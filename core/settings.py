@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'home_budget',
+        'NAME': 'django_crm_aws',
     }
 }
 
