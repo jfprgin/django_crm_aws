@@ -4,3 +4,4 @@ production.py
 /static/
 /media/
 
+**/.env
