@@ -1,3 +1,9 @@
+> A new **serverless version** of this project is available on the [`serverless`](https://github.com/jfprgin/django_crm_aws/tree/serverless) branch.
+>
+> It uses AWS Lambda, API Gateway, DynamoDB and CDK — see [README.serverless.md](https://github.com/jfprgin/django_crm_aws/blob/serverless/README.serverless.md) for full instructions.
+
+***
+
 # Simple DJango CRUD CRM Application
 
 This project is a simple Django-based CRM application featuring full CRUD (Create, Read, Update, Delete) functionality. It demonstrates how to build a database-driven web application using Django, PostgreSQL, and Bootstrap for styling.
