@@ -1,6 +1,6 @@
-> A new **serverless version** of this project is available on the [`serverless`](https://github.com/jfprgin/django_crm_aws/tree/serverless) branch.
+> A new **serverless version** of this project is available on the [`serverless`](https://github.com/jfprgin/django_crm_aws/tree/feature/aws-cdk-lambda) branch.
 >
-> It uses AWS Lambda, API Gateway, DynamoDB and CDK — see [README.serverless.md](https://github.com/jfprgin/django_crm_aws/blob/serverless/README.serverless.md) for full instructions.
+> It uses AWS Lambda, API Gateway, DynamoDB and CDK — see [README.serverless.md](https://github.com/jfprgin/django_crm_aws/tree/feature/aws-cdk-lambda/README.serverless.md) for full instructions.
 
 ***
 
