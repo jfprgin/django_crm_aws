@@ -1,12 +1,14 @@
+import requests
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
 from django.shortcuts import render, redirect
-from django.contrib import messages
 
 from .forms import CreateUserForm, LoginForm, UpdateRecordForm, CreateRecordForm
-from .models import Record
 
+LAMBDA_API_URL = settings.LAMBDA_API_URL
 
 # Homepage
 def home(request):
@@ -53,15 +55,20 @@ def my_login(request):
 
 
 # Dashboard
+LAMBDA_RECORDS_URL = LAMBDA_API_URL + "records"
 @login_required(login_url='my-login')
 def dashboard(request):
-    my_records = Record.objects.all()
+    try:
+        response = requests.get(LAMBDA_RECORDS_URL)
+        data = response.json()
+    except Exception as e:
+        messages.error(request, f"Could not fetch records: {e}")
+        data = []
 
-    context = {'records': my_records}
+    return render(request, 'crm/dashboard.html', {'records': data})
 
-    return render(request, 'crm/dashboard.html', context)
-
-# Crate Record
+# Crate Record using AWS Lambda
+LAMBDA_CREATE_URL = LAMBDA_API_URL + "create"
 @login_required(login_url='my-login')
 def create_record(request):
     form = CreateRecordForm()
@@ -70,9 +77,19 @@ def create_record(request):
         form = CreateRecordForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            record_data = form.cleaned_data
 
-            messages.success(request, 'Record created successfully!')
+            try:
+                response = requests.post(
+                    LAMBDA_CREATE_URL,
+                    json=record_data
+                )
+                if response.status_code == 200:
+                    messages.success(request, 'Record created via Lambda!')
+                else:
+                    messages.error(request, 'Lambda error: ' + response.text)
+            except Exception as e:
+                messages.error(request, f'Error calling Lambda: {e}')
 
             return redirect('dashboard')
 
@@ -83,40 +100,54 @@ def create_record(request):
 # Update Record
 @login_required(login_url='my-login')
 def update_record(request, pk):
-    record = Record.objects.get(id=pk)
-
-    form = UpdateRecordForm(instance=record)
+    url = f"{LAMBDA_API_URL}records/{pk}"
 
     if request.method == 'POST':
-        form = UpdateRecordForm(request.POST, instance=record)
-
+        form = UpdateRecordForm(request.POST)
         if form.is_valid():
-            form.save()
-
-            messages.success(request, 'Record updated successfully!')
+            try:
+                response = requests.put(url, json=form.cleaned_data)
+                if response.status_code == 200:
+                    messages.success(request, "Updated successfully")
+                else:
+                    messages.error(request, f"Failed: {response.text}")
+            except Exception as e:
+                messages.error(request, str(e))
 
             return redirect('dashboard')
 
-    context = {'form': form}
+    # Fetch current data to pre-fill the form
+    response = requests.get(url)
+    data = response.json()
+    form = UpdateRecordForm(initial=data)
 
-    return render(request, 'crm/update-record.html', context)
+    return render(request, 'crm/update-record.html', {'form': form})
 
 # Read / View a singular Record
 @login_required(login_url='my-login')
 def singular_record(request, pk):
-    all_records = Record.objects.get(id=pk)
+    try:
+        url = f"{LAMBDA_API_URL}records/{pk}"
+        response = requests.get(url)
+        record = response.json()
+    except Exception as e:
+        messages.error(request, f"Error fetching record: {e}")
+        record = {}
 
-    context = {'record': all_records}
-
-    return render(request, 'crm/view-record.html', context)
+    return render(request, 'crm/view-record.html', {'record': record})
 
 # Delete Record
 @login_required(login_url='my-login')
 def delete_record(request, pk):
-    record = Record.objects.get(id=pk)
-    record.delete()
-
-    messages.success(request, 'Record deleted successfully!')
+    url = f"{LAMBDA_API_URL}records/{pk}"
+    try:
+        response = requests.delete(url)
+        if response.status_code == 200:
+            messages.success(request, "Record deleted successfully")
+        else:
+            messages.error(request, f"Delete failed: {response.text}")
+    except Exception as e:
+        messages.error(request, str(e))
 
     return redirect('dashboard')
 

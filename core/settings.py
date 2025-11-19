@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from drf_spectacular.contrib import rest_framework_simplejwt
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,8 +28,10 @@ SECRET_KEY = 'django-insecure-hlnmq3_=33x0c$t=me-*57oeb1$g8v7&5k+u=r1v=#@x70i9jl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.50.28.85', 'localhost']
+ALLOWED_HOSTS = []
 
+load_dotenv()
+LAMBDA_API_URL = os.getenv("LAMBDA_API_URL")
 
 # Application definition
 
@@ -86,10 +89,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'django_crm_aws',
-        'USER': 'admin',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
     }
 }
 

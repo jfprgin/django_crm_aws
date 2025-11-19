@@ -41,7 +41,11 @@
                         <td>{{ record.country }}</td>
                         <td>{{ record.creation_date|date:"d.m.Y." }}</td>
                         <td>
-                            <a class="btn btn-info btn-sm" href="{% url 'record' record.id %}">View record</a>
+                            {% if record.id %}
+                              <a class="btn btn-info btn-sm" href="{% url 'record' record.id %}">View record</a>
+                            {% else %}
+                              <span class="text-muted">Invalid ID</span>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
