@@ -98,7 +98,7 @@ cdk deploy
 ```
 
 > You should get an API Gateway URL like:  
-> `https://xyz.execute-api.eu-central-1.amazonaws.com/prod/](https://<your-api-id>.execute-api.<region>.amazonaws.com/prod/`
+> `https://<your-api-id>.execute-api.<region>.amazonaws.com/prod/`
 
 
 ## 8. Teardown (if needed)
