@@ -55,11 +55,12 @@ def my_login(request):
 
 
 # Dashboard
-LAMBDA_RECORDS_URL = LAMBDA_API_URL + "records"
 @login_required(login_url='my-login')
 def dashboard(request):
+    url = LAMBDA_API_URL + "records"
+
     try:
-        response = requests.get(LAMBDA_RECORDS_URL)
+        response = requests.get(url)
         data = response.json()
     except Exception as e:
         messages.error(request, f"Could not fetch records: {e}")
@@ -68,9 +69,10 @@ def dashboard(request):
     return render(request, 'crm/dashboard.html', {'records': data})
 
 # Crate Record using AWS Lambda
-LAMBDA_CREATE_URL = LAMBDA_API_URL + "create"
 @login_required(login_url='my-login')
 def create_record(request):
+    url = LAMBDA_API_URL + "create"
+
     form = CreateRecordForm()
 
     if request.method == 'POST':
@@ -80,10 +82,7 @@ def create_record(request):
             record_data = form.cleaned_data
 
             try:
-                response = requests.post(
-                    LAMBDA_CREATE_URL,
-                    json=record_data
-                )
+                response = requests.post(url, json=record_data)
                 if response.status_code == 200:
                     messages.success(request, 'Record created via Lambda!')
                 else:
@@ -104,9 +103,12 @@ def update_record(request, pk):
 
     if request.method == 'POST':
         form = UpdateRecordForm(request.POST)
+
         if form.is_valid():
+            record_data = form.cleaned_data
+
             try:
-                response = requests.put(url, json=form.cleaned_data)
+                response = requests.put(url, json=record_data)
                 if response.status_code == 200:
                     messages.success(request, "Updated successfully")
                 else:
@@ -126,8 +128,9 @@ def update_record(request, pk):
 # Read / View a singular Record
 @login_required(login_url='my-login')
 def singular_record(request, pk):
+    url = f"{LAMBDA_API_URL}records/{pk}"
+
     try:
-        url = f"{LAMBDA_API_URL}records/{pk}"
         response = requests.get(url)
         record = response.json()
     except Exception as e:
@@ -140,6 +143,7 @@ def singular_record(request, pk):
 @login_required(login_url='my-login')
 def delete_record(request, pk):
     url = f"{LAMBDA_API_URL}records/{pk}"
+
     try:
         response = requests.delete(url)
         if response.status_code == 200:
